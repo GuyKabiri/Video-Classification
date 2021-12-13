@@ -32,7 +32,7 @@ def get_transformer(phase):
     return valid_trans
 
 
-def get_loader(phase, batch_size=4, num_workers=8):
+def get_loaders(batch_size=4, num_workers=8):
     phases = [ 'train', 'valid' ]
 
     paths = { 
