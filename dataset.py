@@ -3,10 +3,11 @@ import torch
 from torch.utils.data import Dataset
 import cv2
 import numpy as np
+from utils import *
 
 class FrameDataset(Dataset):
 
-    classes = [ 'Basketball', 'Biking', 'Driving', 'PizzaTossing', 'RopeClimbing' ]
+    classes = [ 'Basketball', 'Biking', 'Diving', 'PizzaTossing', 'RopeClimbing' ]
 
     def __init__(self, main_dir, transforms=None):
         super().__init__()
@@ -42,6 +43,7 @@ class FrameDataset(Dataset):
                 img = self.transforms(image=img)['image']
             frames.append(img)
 
+        
         frames = torch.stack(frames)
         labels = self.y[idx]
 
@@ -54,10 +56,10 @@ if __name__ == "__main__":
     train_path = 'data/train/'
     valid_path = 'data/valid/'
 
-    train_dataset = FrameDataset(train_path)
+    train_dataset = FrameDataset(train_path, get_transformer('valid'))
     print(len(train_dataset))
     print(len(train_dataset.x), len(train_dataset.y))
 
     batch = train_dataset.__getitem__(30)
-    imgs, lbls = batch
-    print(imgs.shape)
+    # imgs, lbls = batch
+    # print(imgs.shape)

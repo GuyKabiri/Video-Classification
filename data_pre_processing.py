@@ -12,7 +12,7 @@ def verify(path, n_frames):
 
 def convert_video_to_frames(dir, video_name, n_frames=16):
     cap = cv2.VideoCapture(os.path.join(dir, video_name))   #   create video object
-    v_len = int(cap.get(cv2.CAP_PROP_FRAME_COUNT) )              #   get number of frames
+    v_len = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))              #   get number of frames
     frame_list = np.linspace(0, v_len-1, n_frames, dtype=np.int16)    #   generate frame indices list
 
     dir_name = video_name.split('.')[0]  #   extract file name
