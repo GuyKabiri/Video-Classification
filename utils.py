@@ -7,6 +7,7 @@ from albumentations.pytorch import ToTensorV2
 import cv2
 from config import *
 from dataset import FrameDataset
+from dynamic_dataset import DynamicFrameDataset
 
     
 def get_transformer(phase):
@@ -34,28 +35,20 @@ def get_transformer(phase):
     return valid_trans
 
 
-def get_loaders(batch_size=4, num_workers=8):
-    phases = [ 'train', 'valid' ]
+def get_loader(phase, batch_size=4, num_workers=8, dynamic=False, num_frames=16):
+    path = 'data/{}'.format(phase)
 
-    paths = { 
-        p: 'data/copy/{}'.format(p)
-                for p in phases
-    }
+    if dynamic:
+        dataset = DynamicFrameDataset(path, num_frames, get_transformer(phase))
+    else:
+        dataset = FrameDataset(path, get_transformer(phase))
 
-    datasets = {
-        p:  FrameDataset(paths[p], get_transformer(p))
-                for p in phases
-    }
-
-    return {
-        p: DataLoader(
-            dataset=datasets[p],
-            batch_size=batch_size,
-            shuffle=p=='train',
-            num_workers=num_workers
-        )
-            for p in phases
-    }
+    return DataLoader(
+        dataset=dataset,
+        batch_size=batch_size,
+        shuffle= True if phase=='train' else False,
+        num_workers=num_workers
+    )
 
 
 
