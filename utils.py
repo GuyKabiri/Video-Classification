@@ -4,12 +4,14 @@ import torch
 from torch.utils.data import DataLoader
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
+import cv2
 from config import *
 from dataset import FrameDataset
 
     
 def get_transformer(phase):
     valid_trans = A.Compose([
+        A.Resize(height=CFG.height, width=CFG.width, interpolation=cv2.INTER_LINEAR), 
         A.Normalize(
             mean=[0.485, 0.456, 0.406],
             std=[0.229, 0.224, 0.225],
@@ -36,7 +38,7 @@ def get_loaders(batch_size=4, num_workers=8):
     phases = [ 'train', 'valid' ]
 
     paths = { 
-        p: 'data/{}'.format(p)
+        p: 'data/copy/{}'.format(p)
                 for p in phases
     }
 
@@ -52,15 +54,15 @@ def get_loaders(batch_size=4, num_workers=8):
             shuffle=p=='train',
             num_workers=num_workers
         )
-                for p in phases
+            for p in phases
     }
 
 
 
 
-def seed_everything(seed):
-    random.seed(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    torch.cuda.manual_seed(seed)
-    torch.backends.cudnn.deterministic = True
+# def seed_everything(seed):
+#     random.seed(seed)
+#     np.random.seed(seed)
+#     torch.manual_seed(seed)
+#     torch.cuda.manual_seed(seed)
+#     torch.backends.cudnn.deterministic = True
