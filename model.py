@@ -36,34 +36,53 @@ class LitFrames(LightningModule):
 
 
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(self.parameters(), lr=1e-3)
-        return optimizer
+        optimizer = torch.optim.Adam(self.parameters(), lr=CFG.learning_rate)
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.8, patience=2)
+        return { "optimizer": optimizer, "lr_scheduler": scheduler, "monitor": "valid_loss" }
 
+    def training_epoch_end(self, outputs):
+        sch = self.lr_schedulers()
+
+        if isinstance(sch, torch.optim.lr_scheduler.ReduceLROnPlateau):
+            sch.step(self.trainer.callback_metrics["valid_loss"])
+        else:
+            sch.step()
     
-    def training_step(self, batch, b_idx):
+    def training_step(self, batch, batch_idx):
         x, y = batch
 
         output = self(x)
-        pred = torch.argmax(output, dim=1)
+        # pred = torch.argmax(output, dim=1)
 
-        accur = accuracy(pred, y)
+        acc = accuracy(output, y)
         loss = F.cross_entropy(output, y)
 
-        self.log("train_loss", loss)
-        self.log("train_accuracy", accur)
-        
+        metrics = {"train_acc": acc, "train_loss": loss}
+
+        # self.log("train_loss", loss, on_step=False, on_epoch=True)
+        # self.log("train_acc", accur, on_step=False, on_epoch=True)
+        self.log_dict(metrics, on_step=False, on_epoch=True)
         return loss
 
-    def validation_step(self, batch, b_idx):
+    def validation_step(self, batch, batch_idx):
+        loss, acc = self._shared_eval_step(batch, batch_idx)
+        metrics = {"valid_acc": acc, "valid_loss": loss}
+        self.log_dict(metrics, on_step=False, on_epoch=True)
+        return metrics
+
+    def test_step(self, batch, batch_idx):
+        loss, acc = self._shared_eval_step(batch, batch_idx)
+        metrics = {"test_acc": acc, "test_loss": loss}
+        self.log_dict(metrics, on_step=False, on_epoch=True)
+        return metrics
+
+    def _shared_eval_step(self, batch, batch_idx):
         x, y = batch
 
         output = self(x)
-        pred = torch.argmax(output, dim=1)
+        # pred = torch.argmax(output, dim=1)
 
-        accur = accuracy(pred, y)
+        acc = accuracy(output, y)
         loss = F.cross_entropy(output, y)
 
-        self.log("valid_loss", loss)
-        self.log("valid_accuracy", accur)
-        
-        return loss
+        return loss, acc
