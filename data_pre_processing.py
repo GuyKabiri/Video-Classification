@@ -50,7 +50,11 @@ if __name__ == "__main__":
     train_path = 'data/train/'
     valid_path = 'data/valid/'
 
-    for phase in [train_path, valid_path]:
+    # paths = [ train_path, valid_path ]
+
+    paths = [ 'data/test' ]
+
+    for phase in paths:
         classes = os.listdir(phase)
         for c in classes:
             print(c)
