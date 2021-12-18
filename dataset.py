@@ -18,10 +18,15 @@ class FrameDataset(Dataset):
         self.load()
 
     def load(self):
+        #   iterate over the different classes (each class has its own folder)
         for cls in os.listdir(self.main_dir):
-            class_path = os.path.join(self.main_dir, cls)
-            folders_only = [ f for f in os.listdir(class_path) if os.path.isdir( os.path.join(class_path, f) ) ]
+            class_path = os.path.join(self.main_dir, cls)   #   get the path of the class
+            folders_only = [ f for f in os.listdir(class_path) if os.path.isdir( os.path.join(class_path, f) ) ]    #   get all folders in that path, each folder is a video
 
+            # itertare for each folder (video)
+            # generate its full path and add all items in that path to a list (each item is a frame)
+            # x[i] will hold list of frame paths
+            # y[i] will hold an integer (class id)
             for item in folders_only:
                 item_path = os.path.join(class_path, item)
                 frames = os.listdir(item_path)
@@ -36,6 +41,7 @@ class FrameDataset(Dataset):
         frame_paths = self.x[idx]
         frames = []
 
+        #   iterate over all paths (frames), open each frame and append to list
         for path in frame_paths:
             img = cv2.imread(path)
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB).astype(np.float32)

@@ -13,11 +13,11 @@ class LitFrames(LightningModule):
         self.num_classes = num_classes
         self.num_frames = num_frames
 
-        self.backbone = models.resnext50_32x4d(pretrained=True)
+        self.backbone = models.resnet50(pretrained=True)
         
         out_channels = self.backbone.conv1.out_channels
         in_features = self.backbone.fc.in_features
-        self.backbone.conv1 = nn.Conv2d(3*num_frames, out_channels, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3))
+        self.backbone.conv1 = nn.Conv2d(3*num_frames, out_channels, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3))  #   changing 1st conv layer to read 3xnum_frames for early fusion
         self.backbone.fc = nn.Identity()    #    y(x)=x
         self.dropout = nn.Dropout(drop_prob)
         self.relu = nn.ReLU()
@@ -25,9 +25,9 @@ class LitFrames(LightningModule):
 
 
     def forward(self, x):
-        batch_size, n_frames, n_channels, height, width = x.size()
+        batch_size, n_frames, n_channels, height, width = x.size()  #   shape is [ batch, frames, 3, height, width ]
 
-        x = x.view(batch_size, n_frames*n_channels, height, width)
+        x = x.view(batch_size, n_frames*n_channels, height, width)  #   convert shape to [ batch, 3 x frames, height, width ]
         out = self.backbone(x)
         out = self.dropout(self.relu(out))
         out = self.fc(out)

@@ -6,6 +6,7 @@ import shutil
 from tqdm import tqdm
 from config import *
 
+# verify extracted the right number of frames
 def verify(path, n_frames):
     num_files = len(os.listdir(path))
     if num_files != n_frames:
@@ -24,12 +25,16 @@ def convert_video_to_frames(dir, video_name, n_frames=16):
     if not os.path.exists(save_path):
         os.mkdir(save_path)
 
+    # iterate for frame id
     for idx in frame_list:
-        cap.set(cv2.CAP_PROP_POS_FRAMES, idx)
+        cap.set(cv2.CAP_PROP_POS_FRAMES, idx)   #   move video to the relevant frame
         ret, frame = cap.read()
         frame_path = '{}/{}.jpg'.format(save_path, idx)
+
+        # if frame was read
         if ret:
             cv2.imwrite(frame_path, frame)     # save frame as JPG file
+        # error reading frame, generate different one
         else:
             tmp_id = idx - n_frames/2
             cap.set(cv2.CAP_PROP_POS_FRAMES, tmp_id)

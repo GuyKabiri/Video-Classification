@@ -35,21 +35,24 @@ class DynamicFrameDataset(Dataset):
         path = self.x[idx]
         frames = []
 
-        cap = cv2.VideoCapture(path)   #   create video object
+        cap = cv2.VideoCapture(path)   #   open video
         v_len = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))              #   get number of frames
         frame_idx = np.sort(np.random.choice(np.arange(v_len-1), self.num_frames))   #   get random frame indices, sometimes the last frame generates an error, therefore v_len-1
 
+        #   iterate for each frame
         for i in frame_idx:
-            img = torch.zeros((3, 224, 224))
-            cap.set(cv2.CAP_PROP_POS_FRAMES, i)
+            img = torch.zeros((3, 224, 224))    #   empty tensor in case frame will not read by cv2
+            cap.set(cv2.CAP_PROP_POS_FRAMES, i) #   move to relevant frame index
             ret, frame = cap.read()
+
+            # if frame was read
             if ret:
                 img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB).astype(np.float32)
                 if self.transforms:   
                     img = self.transforms(image=img)['image']
             frames.append(img)
 
-        cap.release()
+        cap.release()   #   release video
         
         frames = torch.stack(frames)
         labels = self.y[idx]
