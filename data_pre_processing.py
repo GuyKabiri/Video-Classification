@@ -4,6 +4,7 @@ import numpy as np
 import os
 import shutil
 from tqdm import tqdm
+from config import *
 
 def verify(path, n_frames):
     num_files = len(os.listdir(path))
@@ -49,10 +50,9 @@ def convert_video_to_frames(dir, video_name, n_frames=16):
 if __name__ == "__main__":
     train_path = 'data/train/'
     valid_path = 'data/valid/'
+    test_path = 'data/test/'
 
-    # paths = [ train_path, valid_path ]
-
-    paths = [ 'data/test' ]
+    paths = [ train_path, valid_path, test_path ]
 
     for phase in paths:
         classes = os.listdir(phase)
@@ -60,4 +60,4 @@ if __name__ == "__main__":
             print(c)
             folder = os.path.join(phase, c)
             for f in tqdm(os.listdir(folder), total=len(os.listdir(folder))):
-                convert_video_to_frames(folder, f)
+                convert_video_to_frames(folder, f, CFG.num_frames)
