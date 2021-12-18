@@ -8,9 +8,6 @@ from model import *
 from config import *
 
 def train(config):
-    # train_loader = get_loader('train', config.batch_size, config.num_workers)
-    # valid_loader = get_loader('valid', config.batch_size, config.num_workers)
-    # test_loader = get_loader('test', config.batch_size, config.num_workers)
 
     loaders = {
         p: get_loader(p, config.batch_size, config.num_workers, config.dynamic_frames, config.num_frames)

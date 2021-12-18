@@ -56,13 +56,3 @@ def get_loader(phase, batch_size=4, num_workers=8, dynamic=False, num_frames=16)
         shuffle= True if phase=='train' else False,
         num_workers=num_workers
     )
-
-
-
-
-# def seed_everything(seed):
-#     random.seed(seed)
-#     np.random.seed(seed)
-#     torch.manual_seed(seed)
-#     torch.cuda.manual_seed(seed)
-#     torch.backends.cudnn.deterministic = True

@@ -13,7 +13,7 @@ class LitFrames(LightningModule):
         self.num_classes = num_classes
         self.num_frames = num_frames
 
-        self.backbone = models.resnet101(pretrained=True)
+        self.backbone = models.resnext50_32x4d(pretrained=True)
         
         out_channels = self.backbone.conv1.out_channels
         in_features = self.backbone.fc.in_features
@@ -50,17 +50,12 @@ class LitFrames(LightningModule):
     
     def training_step(self, batch, batch_idx):
         x, y = batch
-
         output = self(x)
-        # pred = torch.argmax(output, dim=1)
 
         acc = accuracy(output, y)
         loss = F.cross_entropy(output, y)
-
         metrics = {"train_acc": acc, "train_loss": loss}
 
-        # self.log("train_loss", loss, on_step=False, on_epoch=True)
-        # self.log("train_acc", accur, on_step=False, on_epoch=True)
         self.log_dict(metrics, on_step=False, on_epoch=True)
         return loss
 
@@ -78,9 +73,7 @@ class LitFrames(LightningModule):
 
     def _shared_eval_step(self, batch, batch_idx):
         x, y = batch
-
         output = self(x)
-        # pred = torch.argmax(output, dim=1)
 
         acc = accuracy(output, y)
         loss = F.cross_entropy(output, y)

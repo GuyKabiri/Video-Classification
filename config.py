@@ -7,7 +7,7 @@ class CFG:
     learning_rate = 1e-5
     num_epochs = 100
     drop_prob = 0.5
-    dynamic_frames = False
+    dynamic_frames = True
     pretrained = True
     height = 224
     width = 224
