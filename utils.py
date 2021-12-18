@@ -23,12 +23,19 @@ def get_transformer(phase):
     if phase == 'train':
         return A.Compose([
             A.OneOf([
-                # A.ChannelDropout(p=0.5),
-                A.Emboss(p=0.5),
-                A.Sharpen(p=0.5),
+                A.Emboss(p=0.3),
+                A.Sharpen(p=0.3),
+            ], p=0.5),
+            A.OneOf([
+                A.Blur(p=0.3),
+                A.GaussNoise(p=0.3, var_limit=(300, 400)),
+                A.MotionBlur(p=0.3, blur_limit=(10, 20)),
+            ], p=0.5),
+            A.OneOf([
+                # A.GridDropout(p=0.5, ratio=0.3),
+                # A.CoarseDropout(p=0.5, max_holes=40, max_height=20, max_width=20, min_holes=8, min_height=8, min_width=8),
             ], p=0.5),
             A.Rotate(p=0.5, limit=[-35, 35]),
-            A.MotionBlur(p=0.3),
             valid_trans,
         ])
 
