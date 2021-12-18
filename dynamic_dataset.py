@@ -37,17 +37,17 @@ class DynamicFrameDataset(Dataset):
 
         cap = cv2.VideoCapture(path)   #   create video object
         v_len = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))              #   get number of frames
-        frame_idx = np.random.choice(np.arange(v_len-1), self.num_frames)   #   get random frame indices, sometimes the last frame generates an error, therefore v_len-1
-
+        frame_idx = np.sort(np.random.choice(np.arange(v_len-1), self.num_frames))   #   get random frame indices, sometimes the last frame generates an error, therefore v_len-1
 
         for i in frame_idx:
+            img = torch.zeros((3, 224, 224))
             cap.set(cv2.CAP_PROP_POS_FRAMES, i)
             ret, frame = cap.read()
             if ret:
                 img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB).astype(np.float32)
                 if self.transforms:   
                     img = self.transforms(image=img)['image']
-                frames.append(img)
+            frames.append(img)
 
         cap.release()
         
