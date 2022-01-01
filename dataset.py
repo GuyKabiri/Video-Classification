@@ -4,15 +4,18 @@ from torch.utils.data import Dataset
 import cv2
 import numpy as np
 from utils import *
+from PackPathwayTransform import PackPathway
 
 class FrameDataset(Dataset):
 
     classes = [ 'Basketball', 'Biking', 'Diving', 'PizzaTossing', 'RopeClimbing' ]
 
-    def __init__(self, main_dir, transforms=None):
+    def __init__(self, main_dir, transforms=None, slowfast=False):
         super().__init__()
         self.transforms = transforms
         self.main_dir = main_dir
+        self.slowfast = slowfast
+        self.pack_pathway = PackPathway()
         self.x = []
         self.y = []
         self.load()
@@ -51,7 +54,15 @@ class FrameDataset(Dataset):
 
         
         frames = torch.stack(frames)
+
+        if self.slowfast:
+            frames = torch.permute(frames, (1, 0, 2, 3))
+            frames = self.pack_pathway(frames)
+
         labels = self.y[idx]
+
+        if self.slowfast:
+            return frames, labels, idx, dict()
 
         return frames, labels
 

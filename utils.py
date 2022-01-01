@@ -38,13 +38,13 @@ def get_transformer(phase):
     return valid_trans
 
 
-def get_loader(phase, batch_size=4, num_workers=8, dynamic=False, num_frames=16):
+def get_loader(phase, batch_size=4, num_workers=8, dynamic=False, num_frames=16, slowfast=False):
     path = 'data/{}'.format(phase)
 
     if dynamic:
         dataset = DynamicFrameDataset(path, num_frames, get_transformer(phase))
     else:
-        dataset = FrameDataset(path, get_transformer(phase))
+        dataset = FrameDataset(path, get_transformer(phase), slowfast)
 
     return DataLoader(
         dataset=dataset,
