@@ -52,16 +52,12 @@ class FrameDataset(Dataset):
                 img = self.transforms(image=img)['image']
             frames.append(img)
 
-        
+        labels = self.y[idx]
         frames = torch.stack(frames)
 
         if self.slowfast:
             frames = torch.permute(frames, (1, 0, 2, 3))
             frames = self.pack_pathway(frames)
-
-        labels = self.y[idx]
-
-        if self.slowfast:
             return frames, labels, idx, dict()
 
         return frames, labels

@@ -4,16 +4,19 @@ from torch.utils.data import Dataset
 import cv2
 import numpy as np
 from utils import *
+from PackPathwayTransform import PackPathway
 
 class DynamicFrameDataset(Dataset):
 
     classes = [ 'Basketball', 'Biking', 'Diving', 'PizzaTossing', 'RopeClimbing' ]
 
-    def __init__(self, main_dir, num_frames, transforms=None):
+    def __init__(self, main_dir, num_frames, transforms=None, slowfast=False):
         super().__init__()
         self.transforms = transforms
         self.main_dir = main_dir
         self.num_frames = num_frames
+        self.slowfast = slowfast
+        self.pack_pathway = PackPathway()
         self.x = []
         self.y = []
         self.load()
@@ -54,8 +57,14 @@ class DynamicFrameDataset(Dataset):
 
         cap.release()   #   release video
         
-        frames = torch.stack(frames)
         labels = self.y[idx]
+        frames = torch.stack(frames)
+
+        if self.slowfast:
+            # change view to [ C, F, H, W ]
+            frames = torch.permute(frames, (1, 0, 2, 3))
+            frames = self.pack_pathway(frames)
+            return frames, labels, idx, dict()
 
         return frames, labels
 

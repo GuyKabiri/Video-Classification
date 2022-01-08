@@ -23,14 +23,14 @@ def get_transformer(phase):
     if phase == 'train':
         return A.Compose([
             # A.OneOf([
-            #     A.Emboss(p=0.3),
+                # A.Emboss(p=0.3),
             #     A.Sharpen(p=0.3),
             # ], p=0.5),
-            # A.OneOf([
-            #     A.Blur(p=0.3),
-            #     A.GaussNoise(p=0.3, var_limit=(300, 400)),
-            #     A.MotionBlur(p=0.3, blur_limit=(10, 20)),
-            # ], p=0.5),
+            A.OneOf([
+                A.Blur(p=0.3),
+                A.GaussNoise(p=0.3, var_limit=(300, 400)),
+                A.MotionBlur(p=0.3, blur_limit=(10, 20)),
+            ], p=1),
             # A.Rotate(p=0.5, limit=[-35, 35]),
             valid_trans,
         ])
@@ -42,7 +42,7 @@ def get_loader(phase, batch_size=4, num_workers=8, dynamic=False, num_frames=16,
     path = 'data/{}'.format(phase)
 
     if dynamic:
-        dataset = DynamicFrameDataset(path, num_frames, get_transformer(phase))
+        dataset = DynamicFrameDataset(path, num_frames, get_transformer(phase), slowfast)
     else:
         dataset = FrameDataset(path, get_transformer(phase), slowfast)
 
