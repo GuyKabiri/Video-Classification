@@ -28,8 +28,7 @@ Table of Contents:
     * [Training](#part2-training)
     * [Results](#part2-results)
         * [ResNet-50](#part2-resnet50)
-* [Results Comparsion](#res-comp)
-* [REferences](#refs)
+* [References](#refs)
 
 # Data <span id="data"><span>
 
