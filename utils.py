@@ -26,11 +26,11 @@ def get_transformer(phase):
                 # A.Emboss(p=0.3),
             #     A.Sharpen(p=0.3),
             # ], p=0.5),
-            A.OneOf([
-                A.Blur(p=0.3),
-                A.GaussNoise(p=0.3, var_limit=(300, 400)),
-                A.MotionBlur(p=0.3, blur_limit=(10, 20)),
-            ], p=1),
+            # A.OneOf([
+                # A.Blur(p=0.3),
+                # A.GaussNoise(p=0.3, var_limit=(300, 400)),
+                # A.MotionBlur(p=0.3, blur_limit=(10, 20)),
+            # ], p=1),
             # A.Rotate(p=0.5, limit=[-35, 35]),
             valid_trans,
         ])

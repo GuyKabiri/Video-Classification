@@ -35,9 +35,9 @@ class SlowFastLitFrames(LightningModule):
 
     def configure_optimizers(self):
         # optimizer = torch.optim.AdamW(self.parameters(), lr=CFG.learning_rate, weight_decay=1e-4)
-        optimizer = torch.optim.SGD(self.parameters(), lr=CFG.learning_rate, momentum=0.9, weight_decay=1e-4)
-        # scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.8, patience=2, cooldown=0)
-        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=CFG.num_epochs, last_epoch=CFG.num_epochs)
+        # optimizer = torch.optim.SGD(self.parameters(), lr=CFG.learning_rate, momentum=0.9, weight_decay=1e-3)
+        optimizer = torch.optim.ASGD(self.parameters(), lr=CFG.learning_rate)
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.9, patience=4, cooldown=2)
         return { "optimizer": optimizer, "lr_scheduler": scheduler, "monitor": "valid_loss" }
 
     def training_epoch_end(self, outputs):
@@ -53,8 +53,7 @@ class SlowFastLitFrames(LightningModule):
         output = self(x)
 
         acc = accuracy(output, y)
-        target = output.softmax(dim=1)
-        loss = F.cross_entropy(target, y)
+        loss = F.cross_entropy(output, y)
         metrics = {"train_acc": acc, "train_loss": loss}
 
         self.log_dict(metrics, on_step=False, on_epoch=True)
@@ -77,7 +76,6 @@ class SlowFastLitFrames(LightningModule):
         output = self(x)
 
         acc = accuracy(output, y)
-        target = output.softmax(dim=1)
-        loss = F.cross_entropy(target, y)
+        loss = F.cross_entropy(output, y)
 
         return loss, acc
