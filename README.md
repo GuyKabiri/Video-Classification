@@ -27,7 +27,6 @@ Table of Contents:
     * [SlowFast](#slowfast)
     * [Training](#part2-training)
     * [Results](#part2-results)
-        * [ResNet-50](#part2-resnet50)
 * [References](#refs)
 
 # Data <span id="data"><span>
