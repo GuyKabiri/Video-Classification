@@ -135,11 +135,7 @@ def plot_class_count(df):
 plot_class_count(df)
 ```
 
-
-    
-![png](submission_files/submission_16_0.png)
-    
-
+![submission_16_0](https://user-images.githubusercontent.com/52006798/149013103-525d5342-2e2f-4230-88b2-f45ae3c43177.png)
 
 
 ```python
@@ -150,11 +146,7 @@ def plot_frames_dist(df):
 plot_frames_dist(df)
 ```
 
-
-    
-![png](submission_files/submission_17_0.png)
-    
-
+![submission_17_0](https://user-images.githubusercontent.com/52006798/149013105-ee4d4e51-1f2e-4366-8b41-5c2f2f342db7.png)
 
 # Part 1 - Early methods <span id="part1"><span>
 The first part of the exercise includes two early video processing methods, Early Fusion, and Late Fusion.  
